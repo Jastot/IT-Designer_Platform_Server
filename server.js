@@ -1,25 +1,88 @@
-// https://www.npmjs.com/package/dotenv
 const dotenv = require('dotenv');
-// https://expressjs.com/ru/
 const express = require('express');
-// https://www.npmjs.com/package/morgan
+const app = express();
 const morgan = require('morgan');
-// https://www.npmjs.com/package/cors
 const cors = require('cors');
+// const bodyParser = require('body-parser');
+// ???
+// var fs = require('fs');
+// var path = require('path');
+const checkPerms = require('./controllers/auth').checkPerms;
 
 // Функция подключения к БД
 const connectDB = require('./config/db.js');
 
 // Загрузка переменный окружения
 dotenv.config({ path: './config/config.env' });
-
-// подключаемся к бд
 connectDB();
 
-// route files
-const users = require('./routes/users.js');
+// api router
+const api = require('./routes/api-master');
+app.use('/api/', api);
 
-const app = express();
+// // set up multer for storing uploaded files
+// var multer = require('multer');
+//
+// var storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'uploads')
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, file.fieldname + '-' + Date.now())
+//     }
+// });
+//
+// var upload = multer({ storage: storage });
+
+// app.use(bodyParser.urlencoded({ extended: false }))
+// app.use(bodyParser.json())
+//
+// // Set EJS as templating engine
+// app.set("view engine", "ejs");
+
+// var imgModel = require('./models/Image');
+
+// app.get('/', (req, res) => {
+//     imgModel.find({}, (err, items) => {
+//         if (err) {
+//             console.log(err);
+//             res.status(500).send('An error occurred', err);
+//         }
+//         else {
+//             res.render('imagesPage', { items: items });
+//         }
+//     });
+// });
+
+// app.get("/*", function (req, res) {
+//    res.sendFile(path.resolve(__dirname, '../pd/build', 'index.html'));
+// })
+
+// app.post('/', upload.single('image'), (req, res, next) => {
+//
+//     var obj = {
+//         name: req.body.name,
+//         desc: req.body.desc,
+//         img: {
+//             data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
+//             contentType: 'image/png'
+//         }
+//     }
+//     imgModel.create(obj, (err, item) => {
+//         if (err) {
+//             console.log(err);
+//         }
+//         else {
+//             // item.save();
+//             res.redirect('/');
+//         }
+//     });
+// });
+
+// route files
+const users = require('./routes/users');
+const worlds = require('./routes/worlds');
+const images = require('./routes/images');
 
 // Получаем возможность брать данные из body
 app.use(express.json());
@@ -31,9 +94,6 @@ if (process.env.NODE_ENV === 'development') {
 
 // Enable CORS
 app.use(cors());
-
-// mount routes
-app.use('/api/users', users);
 
 const PORT = process.env.PORT || 3000;
 
