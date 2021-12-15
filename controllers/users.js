@@ -1,7 +1,7 @@
 const User = require('../models/User.js');
 
 // @desc    Получение списка всех пользователей
-// @route   GET /api/users
+// @route   GET /users
 exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find();
@@ -18,7 +18,7 @@ exports.getUsers = async (req, res, next) => {
 };
 
 // @desc    Получение  пользователя по его id
-// @route   GET /api/users/:id
+// @route   GET /users/:id
 exports.getUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
@@ -34,25 +34,8 @@ exports.getUser = async (req, res, next) => {
   }
 };
 
-// @desc    Создание профиля пользователя
-// @route   POST /api/users
-exports.createUser = async (req, res, next) => {
-  try {
-    const user = await User.create(req.body);
-    res.status(201).json({
-      success: true,
-      data: user,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      error,
-    });
-  }
-};
-
 // @desc    Изменение профиля пользователя по id
-// @route   PUT /api/users/:id
+// @route   PUT /users/:id
 exports.updateUser = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
@@ -72,7 +55,7 @@ exports.updateUser = async (req, res, next) => {
 };
 
 // @desc    Удаление должности по id
-// @route   DELETE /api/users/:id
+// @route   DELETE /users/:id
 exports.deleteUser = async (req, res, next) => {
   try {
     await User.findByIdAndRemove(req.params.id);
