@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const dotenv = require("dotenv");
+dotenv.config({path: './config/config.env'});
 
 const UserSchema = new mongoose.Schema({
   // почта пользователя
@@ -30,14 +33,7 @@ const UserSchema = new mongoose.Schema({
 
 // Генерирует JWT
 UserSchema.methods.getSignedJwtToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRE,
-  });
-};
-
-// Сравнивает введенных пароль к хешем
-UserSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  return jwt.sign({ userId: this._id }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRE});
 };
 
 module.exports = mongoose.model('User', UserSchema);
